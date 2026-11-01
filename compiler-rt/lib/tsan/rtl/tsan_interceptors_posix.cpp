@@ -2466,7 +2466,7 @@ void atfork_child() {
   FdOnFork(thr, pc);
 }
 
-#if !SANITIZER_IOS
+#if !SANITIZER_IOSLIKE
 TSAN_INTERCEPTOR(int, vfork, int fake) {
   // Some programs (e.g. openjdk) call close for all file descriptors
   // in the child process. Under tsan it leads to false positives, because

@@ -139,7 +139,7 @@ bool CheckAndProtect(bool protect, bool ignore_heap, bool print_warnings) {
   if (!protect)
     return true;
 
-#    if SANITIZER_IOS && !SANITIZER_IOSSIM
+#    if SANITIZER_IOSLIKE && !SANITIZER_IOSSIM
   ProtectRange(HeapMemEnd(), ShadowBeg());
   ProtectRange(ShadowEnd(), MetaShadowBeg());
   ProtectRange(MetaShadowEnd(), HiAppMemBeg());

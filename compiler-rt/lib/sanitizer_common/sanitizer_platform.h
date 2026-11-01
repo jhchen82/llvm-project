@@ -77,9 +77,11 @@
 
 // - SANITIZER_APPLE: all Apple code
 //   - TARGET_OS_OSX: macOS
-//   - SANITIZER_IOS: devices (iOS and iOS-like)
+//   - SANITIZER_IOSLIKE: devices (iOS and iOS-like)
+//     - SANITIZER_IOS: iOS only
 //     - SANITIZER_WATCHOS
 //     - SANITIZER_TVOS
+//     - SANITIZER_VISIONOS
 //   - SANITIZER_IOSSIM: simulators (iOS and iOS-like)
 //   - SANITIZER_DRIVERKIT
 #if defined(__APPLE__)
@@ -91,6 +93,11 @@
 #    define SANITIZER_OSX 0
 #  endif
 #  if TARGET_OS_IPHONE
+#    define SANITIZER_IOSLIKE 1
+#  else
+#    define SANITIZER_IOSLIKE 0
+#  endif
+#  if TARGET_OS_IOS
 #    define SANITIZER_IOS 1
 #  else
 #    define SANITIZER_IOS 0
@@ -105,6 +112,11 @@
 #  else
 #    define SANITIZER_TVOS 0
 #  endif
+#  if TARGET_OS_VISION
+#    define SANITIZER_VISIONOS 1
+#  else
+#    define SANITIZER_VISIONOS 0
+#  endif
 #  if TARGET_OS_SIMULATOR
 #    define SANITIZER_IOSSIM 1
 #  else
@@ -115,14 +127,16 @@
 #  else
 #    define SANITIZER_DRIVERKIT 0
 #  endif
-#  define SANITIZER_IOSDEVICE (SANITIZER_IOS && !SANITIZER_IOSSIM)
+#  define SANITIZER_IOSDEVICE (SANITIZER_IOSLIKE && !SANITIZER_IOSSIM)
 #  define SANITIZER_EMBEDDED_VM_LAYOUT SANITIZER_IOSDEVICE
 #else
 #  define SANITIZER_APPLE 0
 #  define SANITIZER_OSX 0
+#  define SANITIZER_IOSLIKE 0
 #  define SANITIZER_IOS 0
 #  define SANITIZER_WATCHOS 0
 #  define SANITIZER_TVOS 0
+#  define SANITIZER_VISIONOS 0
 #  define SANITIZER_IOSSIM 0
 #  define SANITIZER_DRIVERKIT 0
 #  define SANITIZER_IOSDEVICE 0
@@ -350,7 +364,7 @@
 // change the definition of SANITIZER_CAN_USE_ALLOCATOR64 here.
 #ifndef SANITIZER_CAN_USE_ALLOCATOR64
 #  if (SANITIZER_RISCV64 && !SANITIZER_FUCHSIA && !SANITIZER_LINUX) || \
-      SANITIZER_IOS || SANITIZER_DRIVERKIT
+      SANITIZER_IOSLIKE || SANITIZER_DRIVERKIT
 #    define SANITIZER_CAN_USE_ALLOCATOR64 0
 #  elif defined(__mips64) || defined(__hexagon__)
 #    define SANITIZER_CAN_USE_ALLOCATOR64 0

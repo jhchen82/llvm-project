@@ -29,7 +29,7 @@
 
 #  if SANITIZER_APPLE
 // https://github.com/apple-oss-distributions/objc4/blob/8701d5672d3fd3cd817aeb84db1077aafe1a1604/runtime/objc-runtime-new.h#L127
-#    if SANITIZER_IOS && !SANITIZER_IOSSIM
+#    if SANITIZER_IOSLIKE && !SANITIZER_IOSSIM
 #      define OBJC_DATA_MASK 0x0000007ffffffff8UL
 #    else
 #      define OBJC_DATA_MASK 0x00007ffffffffff8UL

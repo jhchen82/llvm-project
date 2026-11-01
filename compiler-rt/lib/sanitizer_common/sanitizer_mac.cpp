@@ -38,7 +38,7 @@
 #  include "sanitizer_procmaps.h"
 #  include "sanitizer_ptrauth.h"
 
-#  if !SANITIZER_IOS
+#  if !SANITIZER_IOSLIKE
 #    include <crt_externs.h>  // for _NSGetEnviron
 #  else
 extern char **environ;
@@ -52,7 +52,7 @@ extern char **environ;
 #    define HAVE_CRASHREPORTERCLIENT_H 0
 #  endif
 
-#  if !SANITIZER_IOS
+#  if !SANITIZER_IOSLIKE
 #    include <crt_externs.h>  // for _NSGetArgv and _NSGetEnviron
 #  else
 extern "C" {
@@ -464,7 +464,7 @@ void GetThreadStackTopAndBottom(bool at_initialization, uptr *stack_top,
 }
 
 char **GetEnviron() {
-#if !SANITIZER_IOS
+#if !SANITIZER_IOSLIKE
   char ***env_ptr = _NSGetEnviron();
   if (!env_ptr) {
     Report("_NSGetEnviron() returned NULL. Please make sure __asan_init() is "
@@ -654,13 +654,13 @@ HandleSignalMode GetHandleSignalMode(int signum) {
 // Offset example:
 // XNU 17 -- macOS 10.13 -- iOS 11 -- tvOS 11 -- watchOS 4
 constexpr u16 GetOSMajorKernelOffset() {
-  if (TARGET_OS_OSX)
+  if (SANITIZER_OSX)
     return 4;
-  if (TARGET_OS_IOS || TARGET_OS_TV)
+  if (SANITIZER_IOS || SANITIZER_TVOS)
     return 6;
-  if (TARGET_OS_WATCH)
+  if (SANITIZER_WATCHOS)
     return 13;
-  if (TARGET_OS_VISION)
+  if (SANITIZER_VISIONOS)
     return 22;
 }
 
@@ -754,7 +754,7 @@ static void MapToMacos(u16 *major, u16 *minor) {
 #  endif
 
   // Below are mappings for pre-macOS-25-aligned releases
-  if (TARGET_OS_IOS || TARGET_OS_TV)
+  if (SANITIZER_IOS || SANITIZER_TVOS)
     *major += 2;
   else if (TARGET_OS_WATCH)
     *major += 9;
@@ -1244,7 +1244,7 @@ char **GetArgv() {
 }
 
 // These platforms definitely support task_info.
-#  if SANITIZER_IOS || SANITIZER_DRIVERKIT || SANITIZER_OSX
+#  if SANITIZER_IOSLIKE || SANITIZER_DRIVERKIT || SANITIZER_OSX
 
 // The task_vm_info struct is normally provided by the macOS SDK, but we need
 // fields only available in 10.12+. Declare the struct manually to be able to

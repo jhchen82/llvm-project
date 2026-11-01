@@ -224,7 +224,7 @@ static void ThreadTerminateCallback(uptr thread) {
 #endif
 
 void InitializePlatformEarly() {
-#  if !SANITIZER_GO && SANITIZER_IOS
+#  if !SANITIZER_GO && SANITIZER_IOSLIKE
   uptr max_vm = GetMaxUserVirtualAddress() + 1;
   if (max_vm < HiAppMemEnd()) {
     Report(

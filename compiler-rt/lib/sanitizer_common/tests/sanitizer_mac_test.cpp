@@ -40,7 +40,7 @@ TEST(SanitizerMac, ParseVersion) {
 #if SANITIZER_IOSSIM
 TEST(SanitizerMac, GetMacosAlignedVersion) {
   const char *vers_str;
-  if (SANITIZER_IOS || SANITIZER_TVOS) {
+  if (SANITIZER_IOSLIKE || SANITIZER_TVOS) {
     vers_str = "13.0";
   } else if (SANITIZER_WATCHOS) {
     vers_str = "6.5";

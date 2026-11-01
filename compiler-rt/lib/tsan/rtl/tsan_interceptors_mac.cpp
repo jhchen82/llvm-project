@@ -177,7 +177,7 @@ TSAN_INTERCEPTOR(void *, OSAtomicDequeue, OSQueueHead *list, size_t offset) {
 }
 
 // OSAtomicFifoEnqueue and OSAtomicFifoDequeue are only on OS X.
-#  if !SANITIZER_IOS
+#  if !SANITIZER_IOSLIKE
 
 TSAN_INTERCEPTOR(void, OSAtomicFifoEnqueue, OSFifoQueueHead *list, void *item,
                  size_t offset) {

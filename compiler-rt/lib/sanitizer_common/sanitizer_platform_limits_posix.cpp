@@ -56,7 +56,7 @@
 #include <utmp.h>
 #endif
 
-#if !SANITIZER_IOS
+#if !SANITIZER_IOSLIKE
 #include <net/route.h>
 #endif
 
@@ -90,7 +90,7 @@
 #include <net/if_arp.h>
 #endif
 
-#if SANITIZER_IOS
+#if SANITIZER_IOSLIKE
 #undef IOC_DIRMASK
 #endif
 

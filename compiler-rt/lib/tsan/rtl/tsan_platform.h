@@ -828,7 +828,7 @@ ALWAYS_INLINE auto SelectMapping(Arg arg) {
   return Func::template Apply<MappingGo48>(arg);
 #  endif
 #else  // SANITIZER_GO
-#  if SANITIZER_IOS && !SANITIZER_IOSSIM
+#  if SANITIZER_IOSLIKE && !SANITIZER_IOSSIM
   return Func::template Apply<MappingAppleAarch64>(arg);
 #  elif defined(__x86_64__) || SANITIZER_APPLE
   return Func::template Apply<Mapping48AddressSpace>(arg);

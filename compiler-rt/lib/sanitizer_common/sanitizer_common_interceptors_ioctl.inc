@@ -85,7 +85,7 @@ static void ioctl_table_fill() {
   _(TIOCSPGRP, READ, pid_t_sz);
   _(TIOCSWINSZ, READ, struct_winsize_sz);
 
-#if !SANITIZER_IOS
+#if !SANITIZER_IOSLIKE
   _(SIOCADDMULTI, READ, struct_ifreq_sz);
   _(SIOCDELMULTI, READ, struct_ifreq_sz);
   _(SIOCGIFADDR, WRITE, struct_ifreq_sz);

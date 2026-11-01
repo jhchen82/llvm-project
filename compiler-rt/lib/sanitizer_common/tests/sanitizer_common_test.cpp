@@ -443,7 +443,7 @@ TEST(SanitizerCommon, InternalScopedStringLargeFormat) {
   }
 }
 
-#if SANITIZER_LINUX || SANITIZER_FREEBSD || SANITIZER_APPLE || SANITIZER_IOS
+#if SANITIZER_LINUX || SANITIZER_FREEBSD || SANITIZER_APPLE || SANITIZER_IOSLIKE
 TEST(SanitizerCommon, GetRandom) {
   u8 buffer_1[32], buffer_2[32];
   for (bool blocking : { false, true }) {

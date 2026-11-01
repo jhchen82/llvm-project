@@ -91,7 +91,7 @@ void InitializePlatformInterceptors();
       (!SANITIZER_WINDOWS || (defined(__MINGW32__) && defined(__i386__)))
 #    define ASAN_INTERCEPT___CXA_THROW 1
 #    define ASAN_INTERCEPT___CXA_RETHROW_PRIMARY_EXCEPTION 1
-#    if defined(_GLIBCXX_SJLJ_EXCEPTIONS) || (SANITIZER_IOS && defined(__arm__))
+#    if defined(_GLIBCXX_SJLJ_EXCEPTIONS) || (SANITIZER_IOSLIKE && defined(__arm__))
 #      define ASAN_INTERCEPT__UNWIND_SJLJ_RAISEEXCEPTION 1
 #    else
 #      define ASAN_INTERCEPT__UNWIND_RAISEEXCEPTION 1

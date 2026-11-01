@@ -103,7 +103,7 @@ SANITIZER_WEAK_IMPORT void *aligned_alloc(__sanitizer::usize __alignment,
 
 #endif  // SANITIZER_APPLE
 
-#if SANITIZER_IOS
+#if SANITIZER_IOSLIKE
 #define SI_IOS 1
 #else
 #define SI_IOS 0
