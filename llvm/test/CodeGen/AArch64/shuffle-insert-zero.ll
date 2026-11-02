@@ -38,12 +38,17 @@ entry:
 }
 
 define <4 x float> @testv4f32_0(<4 x float> noundef %vec) {
-; CHECK-LABEL: testv4f32_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    mov v1.s[0], v0.s[0]
-; CHECK-NEXT:    mov v0.16b, v1.16b
-; CHECK-NEXT:    ret
+; SD-LABEL: testv4f32_0:
+; SD:       // %bb.0: // %entry
+; SD-NEXT:    fmov s0, s0
+; SD-NEXT:    ret
+;
+; GI-LABEL: testv4f32_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    mov v1.s[0], v0.s[0]
+; GI-NEXT:    mov v0.16b, v1.16b
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <4 x float> %vec, <4 x float> <float poison, float 0.000000e+00, float 0.000000e+00, float 0.000000e+00>, <4 x i32> <i32 0, i32 5, i32 6, i32 7>
   ret <4 x float> %vecinit3
@@ -52,9 +57,7 @@ entry:
 define <4 x float> @testv4f32_1(<4 x float> noundef %vec) {
 ; SD-LABEL: testv4f32_1:
 ; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    mov v1.s[0], v0.s[0]
-; SD-NEXT:    mov v0.16b, v1.16b
+; SD-NEXT:    fmov s0, s0
 ; SD-NEXT:    ret
 ;
 ; GI-LABEL: testv4f32_1:
@@ -109,24 +112,41 @@ entry:
 }
 
 define <8 x half> @testv8f16_0(<8 x half> noundef %vec) {
-; CHECK-LABEL: testv8f16_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    mov v1.h[0], v0.h[0]
-; CHECK-NEXT:    mov v0.16b, v1.16b
-; CHECK-NEXT:    ret
+; SD-FP16-LABEL: testv8f16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8f16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
+;
+; GI-LABEL: testv8f16_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    mov v1.h[0], v0.h[0]
+; GI-NEXT:    mov v0.16b, v1.16b
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <8 x half> %vec, <8 x half> <half poison, half 0.000000e+00, half 0.000000e+00, half 0.000000e+00, half 0.000000e+00, half 0.000000e+00, half 0.000000e+00, half 0.000000e+00>, <8 x i32> <i32 0, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15>
   ret <8 x half> %vecinit3
 }
 
 define <8 x half> @testv8f16_1(<8 x half> noundef %vec) {
-; SD-LABEL: testv8f16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    mov v0.16b, v1.16b
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv8f16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8f16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv8f16_1:
 ; GI:       // %bb.0: // %entry
@@ -142,13 +162,18 @@ entry:
 }
 
 define <4 x half> @testv4f16_0(<4 x half> noundef %vec) {
-; SD-LABEL: testv4f16_0:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi d1, #0000000000000000
-; SD-NEXT:    // kill: def $d0 killed $d0 def $q0
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    fmov d0, d1
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv4f16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4f16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi d1, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv4f16_0:
 ; GI:       // %bb.0: // %entry
@@ -163,13 +188,18 @@ entry:
 }
 
 define <4 x half> @testv4f16_1(<4 x half> noundef %vec) {
-; SD-LABEL: testv4f16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi d1, #0000000000000000
-; SD-NEXT:    // kill: def $d0 killed $d0 def $q0
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    fmov d0, d1
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv4f16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4f16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi d1, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv4f16_1:
 ; GI:       // %bb.0: // %entry
@@ -185,24 +215,41 @@ entry:
 }
 
 define <8 x bfloat> @testv8bf16_0(<8 x bfloat> noundef %vec) {
-; CHECK-LABEL: testv8bf16_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    mov v1.h[0], v0.h[0]
-; CHECK-NEXT:    mov v0.16b, v1.16b
-; CHECK-NEXT:    ret
+; SD-FP16-LABEL: testv8bf16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8bf16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
+;
+; GI-LABEL: testv8bf16_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    mov v1.h[0], v0.h[0]
+; GI-NEXT:    mov v0.16b, v1.16b
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <8 x bfloat> %vec, <8 x bfloat> <bfloat poison, bfloat 0.000000e+00, bfloat 0.000000e+00, bfloat 0.000000e+00, bfloat 0.000000e+00, bfloat 0.000000e+00, bfloat 0.000000e+00, bfloat 0.000000e+00>, <8 x i32> <i32 0, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15>
   ret <8 x bfloat> %vecinit3
 }
 
 define <8 x bfloat> @testv8bf16_1(<8 x bfloat> noundef %vec) {
-; SD-LABEL: testv8bf16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    mov v0.16b, v1.16b
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv8bf16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8bf16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv8bf16_1:
 ; GI:       // %bb.0: // %entry
@@ -218,13 +265,18 @@ entry:
 }
 
 define <4 x bfloat> @testv4bf16_0(<4 x bfloat> noundef %vec) {
-; SD-LABEL: testv4bf16_0:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi d1, #0000000000000000
-; SD-NEXT:    // kill: def $d0 killed $d0 def $q0
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    fmov d0, d1
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv4bf16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4bf16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi d1, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv4bf16_0:
 ; GI:       // %bb.0: // %entry
@@ -239,13 +291,18 @@ entry:
 }
 
 define <4 x bfloat> @testv4bf16_1(<4 x bfloat> noundef %vec) {
-; SD-LABEL: testv4bf16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi d1, #0000000000000000
-; SD-NEXT:    // kill: def $d0 killed $d0 def $q0
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    fmov d0, d1
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv4bf16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4bf16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi d1, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv4bf16_1:
 ; GI:       // %bb.0: // %entry
@@ -294,12 +351,17 @@ entry:
 }
 
 define <4 x i32> @testv4i32_0(<4 x i32> noundef %vec) {
-; CHECK-LABEL: testv4i32_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    mov v1.s[0], v0.s[0]
-; CHECK-NEXT:    mov v0.16b, v1.16b
-; CHECK-NEXT:    ret
+; SD-LABEL: testv4i32_0:
+; SD:       // %bb.0: // %entry
+; SD-NEXT:    fmov s0, s0
+; SD-NEXT:    ret
+;
+; GI-LABEL: testv4i32_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    mov v1.s[0], v0.s[0]
+; GI-NEXT:    mov v0.16b, v1.16b
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <4 x i32> %vec, <4 x i32> <i32 poison, i32 0, i32 0, i32 0>, <4 x i32> <i32 0, i32 5, i32 6, i32 7>
   ret <4 x i32> %vecinit3
@@ -308,9 +370,7 @@ entry:
 define <4 x i32> @testv4i32_1(<4 x i32> noundef %vec) {
 ; SD-LABEL: testv4i32_1:
 ; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    mov v1.s[0], v0.s[0]
-; SD-NEXT:    mov v0.16b, v1.16b
+; SD-NEXT:    fmov s0, s0
 ; SD-NEXT:    ret
 ;
 ; GI-LABEL: testv4i32_1:
@@ -364,24 +424,41 @@ entry:
 }
 
 define <8 x i16> @testv8i16_0(<8 x i16> noundef %vec) {
-; CHECK-LABEL: testv8i16_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    mov v1.h[0], v0.h[0]
-; CHECK-NEXT:    mov v0.16b, v1.16b
-; CHECK-NEXT:    ret
+; SD-FP16-LABEL: testv8i16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8i16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
+;
+; GI-LABEL: testv8i16_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    mov v1.h[0], v0.h[0]
+; GI-NEXT:    mov v0.16b, v1.16b
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <8 x i16> %vec, <8 x i16> <i16 poison, i16 0, i16 0, i16 0, i16 0, i16 0, i16 0, i16 0>, <8 x i32> <i32 0, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15>
   ret <8 x i16> %vecinit3
 }
 
 define <8 x i16> @testv8i16_1(<8 x i16> noundef %vec) {
-; SD-LABEL: testv8i16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    mov v0.16b, v1.16b
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv8i16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv8i16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    mov v0.16b, v1.16b
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv8i16_1:
 ; GI:       // %bb.0: // %entry
@@ -395,13 +472,26 @@ entry:
 }
 
 define <4 x i16> @testv4i16_0(<4 x i16> noundef %vec) {
-; CHECK-LABEL: testv4i16_0:
-; CHECK:       // %bb.0: // %entry
-; CHECK-NEXT:    movi v1.2d, #0000000000000000
-; CHECK-NEXT:    // kill: def $d0 killed $d0 def $q0
-; CHECK-NEXT:    mov v1.h[0], v0.h[0]
-; CHECK-NEXT:    fmov d0, d1
-; CHECK-NEXT:    ret
+; SD-FP16-LABEL: testv4i16_0:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4i16_0:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
+;
+; GI-LABEL: testv4i16_0:
+; GI:       // %bb.0: // %entry
+; GI-NEXT:    movi v1.2d, #0000000000000000
+; GI-NEXT:    // kill: def $d0 killed $d0 def $q0
+; GI-NEXT:    mov v1.h[0], v0.h[0]
+; GI-NEXT:    fmov d0, d1
+; GI-NEXT:    ret
 entry:
   %vecinit3 = shufflevector <4 x i16> %vec, <4 x i16> <i16 poison, i16 0, i16 0, i16 0>, <4 x i32> <i32 0, i32 5, i32 6, i32 7>
   ret <4 x i16> %vecinit3
@@ -409,13 +499,18 @@ entry:
 
 define <4 x i16> @testv4i16_1(<4 x i16> noundef %vec) {
 ;
-; SD-LABEL: testv4i16_1:
-; SD:       // %bb.0: // %entry
-; SD-NEXT:    movi v1.2d, #0000000000000000
-; SD-NEXT:    // kill: def $d0 killed $d0 def $q0
-; SD-NEXT:    mov v1.h[0], v0.h[0]
-; SD-NEXT:    fmov d0, d1
-; SD-NEXT:    ret
+; SD-FP16-LABEL: testv4i16_1:
+; SD-FP16:       // %bb.0: // %entry
+; SD-FP16-NEXT:    fmov h0, h0
+; SD-FP16-NEXT:    ret
+;
+; SD-NOFP16-LABEL: testv4i16_1:
+; SD-NOFP16:       // %bb.0: // %entry
+; SD-NOFP16-NEXT:    movi v1.2d, #0000000000000000
+; SD-NOFP16-NEXT:    // kill: def $d0 killed $d0 def $q0
+; SD-NOFP16-NEXT:    mov v1.h[0], v0.h[0]
+; SD-NOFP16-NEXT:    fmov d0, d1
+; SD-NOFP16-NEXT:    ret
 ;
 ; GI-LABEL: testv4i16_1:
 ; GI:       // %bb.0: // %entry
@@ -493,5 +588,3 @@ entry:
 ;; NOTE: These prefixes are unused and the list is autogenerated. Do not add tests below this line:
 ; GI-FP16: {{.*}}
 ; GI-NOFP16: {{.*}}
-; SD-FP16: {{.*}}
-; SD-NOFP16: {{.*}}
